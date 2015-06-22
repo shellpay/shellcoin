@@ -1,0 +1,9 @@
+Building ShellCoin
+
+See doc/readme-qt.rst for instructions on building ShellCoin QT,
+the intended-for-end-users, nice-graphical-interface, reference
+implementation of ShellCoin.
+
+See doc/build-*.txt for instructions on building ShellCoind,
+the intended-for-services, no-graphical-interface, reference
+implementation of ShellCoin.
