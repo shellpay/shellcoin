@@ -1,7 +1,7 @@
 
 ShellCoin development tree
 
-ShellCoin is a PoS-based cryptocurrency.
+ShellCoin is a PoS-based cryptocurrency
 
 Development process
 ===========================
