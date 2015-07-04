@@ -1802,8 +1802,8 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
     </message>
     <message>
         <location filename="../sendcoinsdialog.cpp" line="-173"/>
-        <source>Enter a ShellCoin address (e.g. B8gZqgY4r2RoEdqYk3QsAqFckyf9pRHN6i)</source>
-        <translation>Введите ShellCoin-адрес (например B8gZqgY4r2RoEdqYk3QsAqFckyf9pRHN6i)</translation>
+        <source>Enter a ShellCoin address (e.g. Sa4swuabLzDUiudhhJ563fas95CBeUxuGR)</source>
+        <translation>Введите ShellCoin-адрес (например Sa4swuabLzDUiudhhJ563fas95CBeUxuGR)</translation>
     </message>
     <message>
         <location line="+15"/>
@@ -1935,8 +1935,8 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
     </message>
     <message>
         <location line="+34"/>
-        <source>The address to send the payment to (e.g. B8gZqgY4r2RoEdqYk3QsAqFckyf9pRHN6i)</source>
-        <translation>Адрес получателя платежа (например B8gZqgY4r2RoEdqYk3QsAqFckyf9pRHN6i)</translation>
+        <source>The address to send the payment to (e.g. Sa4swuabLzDUiudhhJ563fas95CBeUxuGR)</source>
+        <translation>Адрес получателя платежа (например Sa4swuabLzDUiudhhJ563fas95CBeUxuGR)</translation>
     </message>
     <message>
         <location line="+60"/>
@@ -1976,8 +1976,8 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
     </message>
     <message>
         <location filename="../sendcoinsentry.cpp" line="+1"/>
-        <source>Enter a ShellCoin address (e.g. B8gZqgY4r2RoEdqYk3QsAqFckyf9pRHN6i)</source>
-        <translation>Введите ShellCoin-адрес (например B8gZqgY4r2RoEdqYk3QsAqFckyf9pRHN6i)</translation>
+        <source>Enter a ShellCoin address (e.g. Sa4swuabLzDUiudhhJ563fas95CBeUxuGR)</source>
+        <translation>Введите ShellCoin-адрес (например Sa4swuabLzDUiudhhJ563fas95CBeUxuGR)</translation>
     </message>
 </context>
 <context>
@@ -2000,8 +2000,8 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
     </message>
     <message>
         <location line="+18"/>
-        <source>The address to sign the message with (e.g. B8gZqgY4r2RoEdqYk3QsAqFckyf9pRHN6i)</source>
-        <translation>Адрес, которым вы хотите подписать сообщение  (напр. B8gZqgY4r2RoEdqYk3QsAqFckyf9pRHN6i)</translation>
+        <source>The address to sign the message with (e.g. Sa4swuabLzDUiudhhJ563fas95CBeUxuGR)</source>
+        <translation>Адрес, которым вы хотите подписать сообщение  (напр. Sa4swuabLzDUiudhhJ563fas95CBeUxuGR)</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -2064,8 +2064,8 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
     </message>
     <message>
         <location line="+21"/>
-        <source>The address the message was signed with (e.g. B8gZqgY4r2RoEdqYk3QsAqFckyf9pRHN6i)</source>
-        <translation>Адрес, которым было подписано сообщение (напр. B8gZqgY4r2RoEdqYk3QsAqFckyf9pRHN6i)</translation>
+        <source>The address the message was signed with (e.g. Sa4swuabLzDUiudhhJ563fas95CBeUxuGR)</source>
+        <translation>Адрес, которым было подписано сообщение (напр. Sa4swuabLzDUiudhhJ563fas95CBeUxuGR)</translation>
     </message>
     <message>
         <location line="+40"/>
@@ -2080,8 +2080,8 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
     <message>
         <location filename="../signverifymessagedialog.cpp" line="+27"/>
         <location line="+3"/>
-        <source>Enter a ShellCoin address (e.g. B8gZqgY4r2RoEdqYk3QsAqFckyf9pRHN6i)</source>
-        <translation>Введите адрес ShellCoin (напр. B8gZqgY4r2RoEdqYk3QsAqFckyf9pRHN6i)</translation>
+        <source>Enter a ShellCoin address (e.g. Sa4swuabLzDUiudhhJ563fas95CBeUxuGR)</source>
+        <translation>Введите адрес ShellCoin (напр. Sa4swuabLzDUiudhhJ563fas95CBeUxuGR)</translation>
     </message>
     <message>
         <location line="-2"/>

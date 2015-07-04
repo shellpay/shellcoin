@@ -42,7 +42,11 @@ set<pair<COutPoint, unsigned int> > setStakeSeen;
 CBigNum bnProofOfStakeLimit(~uint256(0) >> 20);
 CBigNum bnProofOfStakeLimitV2(~uint256(0) >> 20);
 
-unsigned int nStakeMinAge = 4 * 60 * 60; // 8 hours
+/** nStakeMinAge
+ *  nStakeMinAge = The minimum time (in seconds) needed to elapse before an input can be staked. 
+ *  Soon it will become obsolete as it is replaced with minimum confirmations instead of time.
+ */
+unsigned int nStakeMinAge = 4 * 60 * 60; 
 unsigned int nModifierInterval = 8 * 60; // time to elapse before new modifier is computed
 
 int nCoinbaseMaturity = 50;
