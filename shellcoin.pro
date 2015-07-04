@@ -1,6 +1,6 @@
 TEMPLATE = app
 TARGET = ShellCoin-qt
-VERSION = 1.2.0.0
+VERSION = 1.1.2.1
 INCLUDEPATH += src src/json src/qt
 QT += network
 DEFINES += ENABLE_WALLET
@@ -172,7 +172,6 @@ HEADERS += src/qt/bitcoingui.h \
     src/core.h \
     src/main.h \
     src/miner.h \
-    src/irc.h \
     src/net.h \
     src/key.h \
     src/db.h \
@@ -211,8 +210,8 @@ HEADERS += src/qt/bitcoingui.h \
     src/rpcserver.h \
     src/timedata.h \
     src/qt/overviewpage.h \
-	src/qt/statisticspage.h \
-	src/qt/blockbrowser.h \
+    src/qt/statisticspage.h \
+    src/qt/blockbrowser.h \
     src/qt/csvmodelwriter.h \
     src/crypter.h \
     src/qt/sendcoinsentry.h \
@@ -257,10 +256,9 @@ SOURCES += src/qt/bitcoin.cpp src/qt/bitcoingui.cpp \
     src/core.cpp \
     src/main.cpp \
     src/miner.cpp \
-	src/qt/statisticspage.cpp \
-	src/qt/blockbrowser.cpp \
+    src/qt/statisticspage.cpp \
+    src/qt/blockbrowser.cpp \
     src/init.cpp \
-    src/irc.cpp \
     src/net.cpp \
     src/checkpoints.cpp \
     src/addrman.cpp \
@@ -324,7 +322,7 @@ FORMS += \
     src/qt/forms/editaddressdialog.ui \
     src/qt/forms/transactiondescdialog.ui \
     src/qt/forms/overviewpage.ui \
-  	src/qt/forms/statisticspage.ui \
+    src/qt/forms/statisticspage.ui \
     src/qt/forms/blockbrowser.ui \
     src/qt/forms/sendcoinsentry.ui \
     src/qt/forms/askpassphrasedialog.ui \

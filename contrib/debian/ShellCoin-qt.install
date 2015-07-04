@@ -1,0 +1,5 @@
+ShellCoin-qt usr/bin
+share/pixmaps/bitcoin32.xpm usr/share/pixmaps
+share/pixmaps/bitcoin80.xpm usr/share/pixmaps
+debian/ShellCoin-qt.desktop usr/share/applications
+debian/ShellCoin-qt.protocol usr/share/kde4/services/

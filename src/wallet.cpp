@@ -25,7 +25,7 @@ int64_t nTransactionFee = MIN_TX_FEE;
 int64_t nReserveBalance = 0;
 int64_t nMinimumInputValue = 0;
 
-static unsigned int GetStakeSplitAge() { return 9 * 24 * 60 * 60; }
+static unsigned int GetStakeSplitAge() { return 8 * 24 * 60 * 60; }
 static int64_t GetStakeCombineThreshold() { return 10000 * COIN; }
 
 int64_t gcd(int64_t n,int64_t m) { return m == 0 ? n : gcd(m, n % m); }
@@ -396,7 +396,7 @@ void CWallet::WalletUpdateSpent(const CTransaction &tx, bool fBlock)
                     LogPrintf("WalletUpdateSpent: bad wtx %s\n", wtx.GetHash().ToString());
                 else if (!wtx.IsSpent(txin.prevout.n) && IsMine(wtx.vout[txin.prevout.n]))
                 {
-                    LogPrintf("WalletUpdateSpent found spent coin %s BC %s\n", FormatMoney(wtx.GetCredit()), wtx.GetHash().ToString());
+                    LogPrintf("WalletUpdateSpent found spent coin %s BLK %s\n", FormatMoney(wtx.GetCredit()), wtx.GetHash().ToString());
                     wtx.MarkSpent(txin.prevout.n);
                     wtx.WriteToDisk();
                     NotifyTransactionChanged(this, txin.prevout.hash, CT_UPDATED);
@@ -940,7 +940,7 @@ void CWallet::ReacceptWalletTransactions()
                 }
                 if (fUpdated)
                 {
-                    LogPrintf("ReacceptWalletTransactions found spent coin %s BC %s\n", FormatMoney(wtx.GetCredit()), wtx.GetHash().ToString());
+                    LogPrintf("ReacceptWalletTransactions found spent coin %s BLK %s\n", FormatMoney(wtx.GetCredit()), wtx.GetHash().ToString());
                     wtx.MarkDirty();
                     wtx.WriteToDisk();
                 }
@@ -1654,13 +1654,27 @@ bool CWallet::CreateTransaction(const vector<pair<CScript, int64_t> >& vecSend, 
 
     wtxNew.BindWallet(this);
 
-wtxNew.nLockTime = std::max(0, nBestHeight - 10);
-if (GetRandInt(10) == 0)
-	wtxNew.nLockTime = std::max(0, (int)wtxNew.nLockTime - GetRandInt(100));
- assert(wtxNew.nLockTime <= (unsigned int)nBestHeight);
-  assert(wtxNew.nLockTime < LOCKTIME_THRESHOLD);
+    // Discourage fee sniping.
+    //
+    // However because of a off-by-one-error in previous versions we need to
+    // neuter it by setting nLockTime to at least one less than nBestHeight.
+    // Secondly currently propagation of transactions created for block heights
+    // corresponding to blocks that were just mined may be iffy - transactions
+    // aren't re-accepted into the mempool - we additionally neuter the code by
+    // going ten blocks back. Doesn't yet do anything for sniping, but does act
+    // to shake out wallet bugs like not showing nLockTime'd transactions at
+    // all.
+    wtxNew.nLockTime = std::max(0, nBestHeight - 10);
 
+    // Secondly occasionally randomly pick a nLockTime even further back, so
+    // that transactions that are delayed after signing for whatever reason,
+    // e.g. high-latency mix networks and some CoinJoin implementations, have
+    // better privacy.
+    if (GetRandInt(10) == 0)
+        wtxNew.nLockTime = std::max(0, (int)wtxNew.nLockTime - GetRandInt(100));
 
+    assert(wtxNew.nLockTime <= (unsigned int)nBestHeight);
+    assert(wtxNew.nLockTime < LOCKTIME_THRESHOLD);
 
     {
         LOCK2(cs_main, cs_wallet);
@@ -1716,23 +1730,27 @@ if (GetRandInt(10) == 0)
 
                         // Reserve a new key pair from key pool
                         CPubKey vchPubKey;
-                        assert(reservekey.GetReservedKey(vchPubKey)); // should never fail, as we just unlocked
+                        bool ret;
+                        ret = reservekey.GetReservedKey(vchPubKey);
+                        assert(ret); // should never fail, as we just unlocked
 
                         scriptChange.SetDestination(vchPubKey.GetID());
                     }
 
                     // Insert change txn at random position:
-                    vector<CTxOut>::iterator position = wtxNew.vout.begin()+GetRandInt(wtxNew.vout.size());
+                    vector<CTxOut>::iterator position = wtxNew.vout.begin()+GetRandInt(wtxNew.vout.size()+1);
                     wtxNew.vout.insert(position, CTxOut(nChange, scriptChange));
                 }
                 else
                     reservekey.ReturnKey();
-		
 
                 // Fill vin
+                //
+                // Note how the sequence number is set to max()-1 so that the
+                // nLockTime set above actually works.
                 BOOST_FOREACH(const PAIRTYPE(const CWalletTx*,unsigned int)& coin, setCoins)
-                wtxNew.vin.push_back(CTxIn(coin.first->GetHash(),coin.second,CScript(),
-					std::numeric_limits<unsigned int>::max()-1));
+                    wtxNew.vin.push_back(CTxIn(coin.first->GetHash(),coin.second,CScript(),
+                                              std::numeric_limits<unsigned int>::max()-1));
 
                 // Sign
                 int nIn = 0;
@@ -2475,7 +2493,7 @@ void CWallet::FixSpentCoins(int& nMismatchFound, int64_t& nBalanceInQuestion, bo
         {
             if (IsMine(pcoin->vout[n]) && pcoin->IsSpent(n) && (txindex.vSpent.size() <= n || txindex.vSpent[n].IsNull()))
             {
-                LogPrintf("FixSpentCoins found lost coin %s BC %s[%d], %s\n",
+                LogPrintf("FixSpentCoins found lost coin %s BLK %s[%d], %s\n",
                     FormatMoney(pcoin->vout[n].nValue), pcoin->GetHash().ToString(), n, fCheckOnly? "repair not attempted" : "repairing");
                 nMismatchFound++;
                 nBalanceInQuestion += pcoin->vout[n].nValue;
@@ -2487,7 +2505,7 @@ void CWallet::FixSpentCoins(int& nMismatchFound, int64_t& nBalanceInQuestion, bo
             }
             else if (IsMine(pcoin->vout[n]) && !pcoin->IsSpent(n) && (txindex.vSpent.size() > n && !txindex.vSpent[n].IsNull()))
             {
-                LogPrintf("FixSpentCoins found spent coin %s BC %s[%d], %s\n",
+                LogPrintf("FixSpentCoins found spent coin %s BLK %s[%d], %s\n",
                     FormatMoney(pcoin->vout[n].nValue), pcoin->GetHash().ToString(), n, fCheckOnly? "repair not attempted" : "repairing");
                 nMismatchFound++;
                 nBalanceInQuestion += pcoin->vout[n].nValue;

@@ -1,0 +1,2 @@
+debian/bin/ShellCoind usr/bin
+src/ShellCoind usr/lib/ShellCoin

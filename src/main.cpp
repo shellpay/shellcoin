@@ -21,6 +21,10 @@
 using namespace std;
 using namespace boost;
 
+#if defined(NDEBUG)
+# error "ShellCoin cannot be compiled without assertions."
+#endif
+
 //
 // Global state
 //
@@ -38,7 +42,7 @@ set<pair<COutPoint, unsigned int> > setStakeSeen;
 CBigNum bnProofOfStakeLimit(~uint256(0) >> 20);
 CBigNum bnProofOfStakeLimitV2(~uint256(0) >> 20);
 
-unsigned int nStakeMinAge = 4 * 60 * 60; // 4 hours
+unsigned int nStakeMinAge = 4 * 60 * 60; // 8 hours
 unsigned int nModifierInterval = 8 * 60; // time to elapse before new modifier is computed
 
 int nCoinbaseMaturity = 50;
@@ -966,17 +970,16 @@ static CBigNum GetProofOfStakeLimit(int nHeight)
 int64_t GetProofOfWorkReward(int64_t nFees)
 {
     int64_t nSubsidy = 0 * COIN;
-  
-if(pindexBest->nHeight == 1 )
-    {
-        nSubsidy = 300000000 * COIN;
-    }
 
-else 
-    {
-       nSubsidy = 0 * COIN;
+    if(pindexBest->nHeight == 1 )
+     {
+     nSubsidy = 300000000 * COIN;
      }
-    LogPrint("creation", "GetProofOfWorkReward() : create=%s nSubsidy=%d\n", FormatMoney(nSubsidy), nSubsidy);
+
+    else
+     {
+     nSubsidy = 0 * COIN;
+     }
 
     return nSubsidy + nFees;
 }
@@ -984,52 +987,12 @@ else
 // miner's coin stake reward based on coin age spent (coin-days)
 int64_t GetProofOfStakeReward(int64_t nCoinAge, int64_t nFees)
 {
-    int64_t nSubsidy = 5 * COIN; 
-
-    LogPrint("creation", "GetProofOfStakeReward(): create=%s nCoinAge=%d\n", FormatMoney(nSubsidy), nCoinAge);
+    int64_t nSubsidy = 5 * COIN;
 
     return nSubsidy + nFees;
 }
 
 static const int64_t nTargetTimespan = 60 * 60;  // 60 mins
-
-//
-// maximum nBits value could possible be required nTime after
-//
-unsigned int ComputeMaxBits(CBigNum bnTargetLimit, unsigned int nBase, int64_t nTime)
-{
-    CBigNum bnResult;
-    bnResult.SetCompact(nBase);
-    bnResult *= 2;
-    while (nTime > 0 && bnResult < bnTargetLimit)
-    {
-        // Maximum 200% adjustment per day...
-        bnResult *= 2;
-        nTime -= 24 * 60 * 60;
-    }
-    if (bnResult > bnTargetLimit)
-        bnResult = bnTargetLimit;
-    return bnResult.GetCompact();
-}
-
-//
-// minimum amount of work that could possibly be required nTime after
-// minimum proof-of-work required was nBase
-//
-unsigned int ComputeMinWork(unsigned int nBase, int64_t nTime)
-{
-    return ComputeMaxBits(Params().ProofOfWorkLimit(), nBase, nTime);
-}
-
-//
-// minimum amount of stake that could possibly be required nTime after
-// minimum proof-of-stake required was nBase
-//
-unsigned int ComputeMinStake(unsigned int nBase, int64_t nTime, unsigned int nBlockTime)
-{
-    return ComputeMaxBits(bnProofOfStakeLimit, nBase, nTime);
-}
-
 
 // ppcoin: find last block index up to pindex
 const CBlockIndex* GetLastBlockIndex(const CBlockIndex* pindex, bool fProofOfStake)
@@ -1058,7 +1021,7 @@ unsigned int GetNextTargetRequired(const CBlockIndex* pindexLast, bool fProofOfS
     int64_t nActualSpacing = pindexPrev->GetBlockTime() - pindexPrevPrev->GetBlockTime();
     if (nActualSpacing < 0)
         nActualSpacing = nTargetSpacing;
-
+    
     // ppcoin: target change every block
     // ppcoin: retarget with exponential moving toward target spacing
     CBigNum bnNew;
@@ -1118,12 +1081,12 @@ void static InvalidChainFound(CBlockIndex* pindexNew)
 
     LogPrintf("InvalidChainFound: invalid block=%s  height=%d  trust=%s  blocktrust=%d  date=%s\n",
       pindexNew->GetBlockHash().ToString(), pindexNew->nHeight,
-      CBigNum(pindexNew->nChainTrust).ToString(), nBestInvalidBlockTrust.Get64(),
+      CBigNum(pindexNew->nChainTrust).ToString(), nBestInvalidBlockTrust.GetLow64(),
       DateTimeStrFormat("%x %H:%M:%S", pindexNew->GetBlockTime()));
     LogPrintf("InvalidChainFound:  current best=%s  height=%d  trust=%s  blocktrust=%d  date=%s\n",
       hashBestChain.ToString(), nBestHeight,
       CBigNum(pindexBest->nChainTrust).ToString(),
-      nBestBlockTrust.Get64(),
+      nBestBlockTrust.GetLow64(),
       DateTimeStrFormat("%x %H:%M:%S", pindexBest->GetBlockTime()));
 }
 
@@ -1771,7 +1734,7 @@ bool CBlock::SetBestChain(CTxDB& txdb, CBlockIndex* pindexNew)
     LogPrintf("SetBestChain: new best=%s  height=%d  trust=%s  blocktrust=%d  date=%s\n",
       hashBestChain.ToString(), nBestHeight,
       CBigNum(nBestChainTrust).ToString(),
-      nBestBlockTrust.Get64(),
+      nBestBlockTrust.GetLow64(),
       DateTimeStrFormat("%x %H:%M:%S", pindexBest->GetBlockTime()));
 
     // Check the version of the last 100 blocks to see if we need to upgrade:
@@ -3300,7 +3263,12 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
     }
 
 
-    else if (strCommand == "getaddr")
+    // This asymmetric behavior for inbound and outbound connections was introduced
+    // to prevent a fingerprinting attack: an attacker can send specific fake addresses
+    // to users' AddrMan and later request them by sending getaddr messages. 
+    // Making users (which are behind NAT and can only make outgoing connections) ignore 
+    // getaddr message mitigates the attack.
+    else if ((strCommand == "getaddr") && (pfrom->fInbound))
     {
         // Don't return addresses older than nCutOff timestamp
         int64_t nCutOff = GetTime() - (nNodeLifespan * 24 * 60 * 60);
@@ -3620,7 +3588,12 @@ bool SendMessages(CNode* pto, bool fSendTrickle)
         }
 
         // Resend wallet transactions that haven't gotten in a block yet
-        ResendWalletTransactions();
+        // Except during reindex, importing and IBD, when old wallet
+        // transactions become unconfirmed and spams other nodes.
+        if (!fReindex && !fImporting && !IsInitialBlockDownload())
+        {
+            ResendWalletTransactions();
+        }
 
         // Address refresh broadcast
         static int64_t nLastRebroadcast;

@@ -56,8 +56,17 @@ public:
         nDefaultPort = 31000;
         nRPCPort = 31100;
         bnProofOfWorkLimit = CBigNum(~uint256(0) >> 16);
+
+        // Build the genesis block. Note that the output of the genesis coinbase cannot
+        // be spent as it did not originally exist in the database.
+        //
+        //CBlock(hash=000001faef25dec4fbcf906e6242621df2c183bf232f263d0ba5b101911e4563, ver=1, hashPrevBlock=0000000000000000000000000000000000000000000000000000000000000000, hashMerkleRoot=12630d16a97f24b287c8c2594dda5fb98c9e6c70fc61d44191931ea2aa08dc90, nTime=1393221600, nBits=1e0fffff, nNonce=164482, vtx=1, vchBlockSig=)
+        //  Coinbase(hash=12630d16a9, nTime=1393221600, ver=1, vin.size=1, vout.size=1, nLockTime=0)
+        //    CTxIn(COutPoint(0000000000, 4294967295), coinbase 00012a24323020466562203230313420426974636f696e2041544d7320636f6d6520746f20555341)
+        //    CTxOut(empty)
+        //  vMerkleTree: 12630d16a9
         const char* pszTimestamp = "ShellCoin Launched May 2015";
-	std::vector<CTxIn> vin;
+        std::vector<CTxIn> vin;
         vin.resize(1);
         vin[0].scriptSig = CScript() << 0 << CBigNum(42) << vector<unsigned char>((const unsigned char*)pszTimestamp, (const unsigned char*)pszTimestamp + strlen(pszTimestamp));
         std::vector<CTxOut> vout;
@@ -68,25 +77,20 @@ public:
         genesis.hashPrevBlock = 0;
         genesis.hashMerkleRoot = genesis.BuildMerkleTree();
         genesis.nVersion = 1;
-        genesis.nTime    = 1431325505;
-        genesis.nBits    = 520159231;
-        genesis.nNonce   = 89122;
-        
-        hashGenesisBlock = genesis.GetHash(); 
+        genesis.nTime = 1431325505;
+        genesis.nBits = 520159231;
+        genesis.nNonce = 89122;
 
-
+        hashGenesisBlock = genesis.GetHash();
         assert(hashGenesisBlock == uint256("0x00003e0095045e13231b44e4d5624aac6c708a23833fb653c614385cb4cb6a48"));
         assert(genesis.hashMerkleRoot == uint256("0xecfc7fe9e53bda0f4fcb767ad8c1b82efba397d313bf4af1e245c78939dc99de"));
 
-		vSeeds.push_back(CDNSSeedData("120.26.62.188", "120.26.62.188"));
-	        vSeeds.push_back(CDNSSeedData("121.40.168.222", "121.40.168.222"));
-		vSeeds.push_back(CDNSSeedData("node1.shellcoinwallet.com", "node1.shellcoinwallet.com"));
-		vSeeds.push_back(CDNSSeedData("node2.shellcoinwallet.com", "node2.shellcoinwallet.com"));
-		vSeeds.push_back(CDNSSeedData("node3.shellcoinwallet.com", "node3.shellcoinwallet.com"));
-        
+        vSeeds.push_back(CDNSSeedData("120.26.62.188", "120.26.62.188"));
+        vSeeds.push_back(CDNSSeedData("121.40.168.222", "121.40.168.222"));
+        vSeeds.push_back(CDNSSeedData("node1.shellcoinwallet.com", "node1.shellcoinwallet.com"));
+        vSeeds.push_back(CDNSSeedData("node2.shellcoinwallet.com", "node2.shellcoinwallet.com"));
+        vSeeds.push_back(CDNSSeedData("node3.shellcoinwallet.com", "node3.shellcoinwallet.com"));
 
-       
-        
         base58Prefixes[PUBKEY_ADDRESS] = list_of(63);
         base58Prefixes[SCRIPT_ADDRESS] = list_of(85);
         base58Prefixes[SECRET_KEY] =     list_of(153);
@@ -104,13 +108,16 @@ public:
     virtual const vector<CAddress>& FixedSeeds() const {
         return vFixedSeeds;
     }
-	protected:
-      CBlock genesis;
-  	  vector<CAddress> vFixedSeeds;
+protected:
+    CBlock genesis;
+    vector<CAddress> vFixedSeeds;
 };
 static CMainParams mainParams;
 
 
+//
+// Testnet
+//
 
 class CTestNetParams : public CMainParams {
 public:
@@ -129,15 +136,14 @@ public:
         strDataDir = "testnet";
 
         // Modify the testnet genesis block so the timestamp is valid for a later start.
-        genesis.nBits  = bnProofOfWorkLimit.GetCompact(); 
+        genesis.nBits  = bnProofOfWorkLimit.GetCompact();
         genesis.nNonce = 89122;
-        hashGenesisBlock = genesis.GetHash(); 
-        assert(hashGenesisBlock == uint256("0x00003e0095045e13231b44e4d5624aac6c708a23833fb653c614385cb4cb6a48"));
-
+        hashGenesisBlock = genesis.GetHash();
+        assert(hashGenesisBlock == uint256("0x00003e0095045e13231b44e4d5624aac6c708a23833fb653c614385cb4cb6a48")); 
         vFixedSeeds.clear();
         vSeeds.clear();
 
-        base58Prefixes[PUBKEY_ADDRESS] = list_of(127);
+        base58Prefixes[PUBKEY_ADDRESS] = list_of(111);
         base58Prefixes[SCRIPT_ADDRESS] = list_of(196);
         base58Prefixes[SECRET_KEY]     = list_of(239);
         base58Prefixes[EXT_PUBLIC_KEY] = list_of(0x04)(0x35)(0x87)(0xCF);
@@ -151,6 +157,34 @@ public:
 };
 static CTestNetParams testNetParams;
 
+
+//
+// Regression test
+//
+class CRegTestParams : public CTestNetParams {
+public:
+    CRegTestParams() {
+        pchMessageStart[0] = 0xca;
+        pchMessageStart[1] = 0xaf;
+        pchMessageStart[2] = 0xc5;
+        pchMessageStart[3] = 0xf8;
+        bnProofOfWorkLimit = CBigNum(~uint256(0) >> 1);
+        genesis.nTime = 1431325505;
+        genesis.nBits  = bnProofOfWorkLimit.GetCompact();
+        genesis.nNonce = 0;
+        hashGenesisBlock = genesis.GetHash();
+        nDefaultPort = 31135;
+        strDataDir = "regtest";
+
+        assert(hashGenesisBlock == uint256("0x2aa199c0ed05ffd96ddbd28e5e4d475a4823774b0cb711c14c647c4f475d6592"));
+
+        vSeeds.clear();  // Regtest mode doesn't have any DNS seeds.
+    }
+
+    virtual bool RequireRPCPassword() const { return false; }
+    virtual Network NetworkID() const { return CChainParams::REGTEST; }
+};
+static CRegTestParams regTestParams;
 
 static CChainParams *pCurrentParams = &mainParams;
 
@@ -166,6 +200,9 @@ void SelectParams(CChainParams::Network network) {
         case CChainParams::TESTNET:
             pCurrentParams = &testNetParams;
             break;
+        case CChainParams::REGTEST:
+            pCurrentParams = &regTestParams;
+            break;
         default:
             assert(false && "Unimplemented network");
             return;
@@ -173,14 +210,19 @@ void SelectParams(CChainParams::Network network) {
 }
 
 bool SelectParamsFromCommandLine() {
-    
+    bool fRegTest = GetBoolArg("-regtest", false);
     bool fTestNet = GetBoolArg("-testnet", false);
-    
-    if (fTestNet) {
+
+    if (fTestNet && fRegTest) {
+        return false;
+    }
+
+    if (fRegTest) {
+        SelectParams(CChainParams::REGTEST);
+    } else if (fTestNet) {
         SelectParams(CChainParams::TESTNET);
     } else {
         SelectParams(CChainParams::MAIN);
     }
     return true;
 }
-
