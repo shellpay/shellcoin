@@ -82,7 +82,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     prevBlocks(0),
     nWeight(0)
 {
-    setFixedSize(970, 550);
+    resize(970, 550); 
     setWindowTitle(tr("Shellcoin") + " - " + tr("Wallet"));
     qApp->setStyleSheet("QMainWindow { background-image: url(:images/bkg);border:none;font-family:'Open Sans,sans-serif'; } #frame { } QToolBar QLabel { padding-top: 0px;padding-bottom: 0px;spacing: 10px;} QToolBar QLabel:item { padding-top: 0px;padding-bottom: 0px;spacing: 10px;} #spacer { background:rgb(0,161,218);border:none; } #toolbar2 { border:none;width:0px;hight:0px;padding-top:0px;padding-bottom:0px; background: rgb(56,56,56); } #toolbar { border:1px;height:100%;padding-top:20px; background: rgb(0,161,218); text-align: left; color: white;min-width:150px;max-width:150px;} QToolBar QToolButton:hover {background-color:qlineargradient(x1: 0, y1: 0, x2: 2, y2: 2,stop: 0 rgb(0,107,147), stop: 1 rgb(0,107,147),stop: 2 rgb(0,107,147));}"
 #ifdef Q_OS_MAC
