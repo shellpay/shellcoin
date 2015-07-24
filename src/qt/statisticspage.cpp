@@ -42,7 +42,7 @@ void StatisticsPage::updateStatistics()
     int pPawrate = GetPoWMHashPS();
     double pPawrate2 = 0.000;
     int nHeight = pindexBest->nHeight;
-    uint64_t nMinWeight = 0, nMaxWeight = 0, nWeight = 0;
+    uint64_t nMinWeight = 0;
     pwalletMain->GetStakeWeight();
     uint64_t nNetworkWeight = GetPoSKernelPS();
     int64_t volume = ((pindexBest->nMoneySupply)/100000000);

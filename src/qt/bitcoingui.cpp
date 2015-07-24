@@ -530,7 +530,7 @@ void BitcoinGUI::setNumBlocks(int count)
         return;
     }
 
-    bool fShowStatusBar = false;
+    //bool fShowStatusBar = false;
     QString tooltip;
 
     QDateTime lastBlockDate = clientModel->getLastBlockDate();
@@ -584,7 +584,7 @@ void BitcoinGUI::setNumBlocks(int count)
         progressBar->setMaximum(totalSecs);
         progressBar->setValue(totalSecs - secs);
         progressBar->setVisible(false);
-        fShowStatusBar = false;
+        //fShowStatusBar = false;
 
         tooltip = tr("Catching up...") + QString("<br>") + tooltip;
         labelBlocksIcon->setMovie(syncIconMovie);
