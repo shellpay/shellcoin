@@ -153,6 +153,9 @@ static const CRPCConvertParam vRPCConvertParams[] =
     { "importprivkey", 2 },
     { "checkkernel", 0 },
     { "checkkernel", 1 },
+    { "searchrawtransactions", 1 },
+    { "searchrawtransactions", 2 },
+    { "searchrawtransactions", 3 },
 };
 
 class CRPCConvertTable
