@@ -84,13 +84,13 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
 {
     resize(970, 550); 
     setWindowTitle(tr("Shellcoin") + " - " + tr("Wallet"));
-    qApp->setStyleSheet("QMainWindow { background-image: url(:images/bkg);border:none;font-family:'Open Sans,sans-serif'; } #frame { } QToolBar QLabel { padding-top: 0px;padding-bottom: 0px;spacing: 10px;} QToolBar QLabel:item { padding-top: 0px;padding-bottom: 0px;spacing: 10px;} #spacer { background:rgb(0,161,218);border:none; } #toolbar2 { border:none;width:0px;hight:0px;padding-top:0px;padding-bottom:0px; background: rgb(56,56,56); } #toolbar { border:1px;height:100%;padding-top:20px; background: rgb(0,161,218); text-align: left; color: white;min-width:150px;max-width:150px;} QToolBar QToolButton:hover {background-color:qlineargradient(x1: 0, y1: 0, x2: 2, y2: 2,stop: 0 rgb(0,107,147), stop: 1 rgb(0,107,147),stop: 2 rgb(0,107,147));}"
+    qApp->setStyleSheet("QMainWindow { background-image: url(:images/bkg);border:none;font-family:'Open Sans,sans-serif'; } #frame { } QToolBar QLabel { padding-top: 0px;padding-bottom: 0px;spacing: 10px;} QToolBar QLabel:item { padding-top: 0px;padding-bottom: 0px;spacing: 10px;} #spacer { background:rgb(200,200,200);border:none; } #toolbar2 { border:none;width:0px;hight:0px;padding-top:0px;padding-bottom:0px; background: rgb(104,104,104); } #toolbar { border:1px;height:100%;padding-top:20px; background: rgb(200,200,200); text-align: left; color: black;min-width:150px;max-width:150px;} QToolBar QToolButton:hover {background-color:qlineargradient(x1: 0, y1: 0, x2: 2, y2: 2,stop: 0 rgb(200,200,200), stop: 1 rgb(104,104,104),stop: 2 rgb(104,104,104));}"
 #ifdef Q_OS_MAC
-"QToolBar QToolButton { font-family:sans-serif;font-size:12px;padding-left:20px;padding-right:45px;padding-top:5px;padding-bottom:5px; width:100%; color: rgb(255,255,255); text-align: left; background-color: rgb(0,161,218);  }"
+"QToolBar QToolButton { font-family:sans-serif;font-size:12px;padding-left:20px;padding-right:45px;padding-top:5px;padding-bottom:5px; width:100%; color: rgb(104,104,104); text-align: left; background-color: rgb(200,200,200);  }"
 #else
-"QToolBar QToolButton { font-family:sans-serif;font-size:12px;padding-left:20px;padding-right:150px;padding-top:5px;padding-bottom:5px; width:100%; color: rgb(255,255,255); text-align: left; background-color: rgb(0,161,218);  }"
+"QToolBar QToolButton { font-family:sans-serif;font-size:12px;padding-left:20px;padding-right:150px;padding-top:5px;padding-bottom:5px; width:100%; color: rgb(104,104,104); text-align: left; background-color: rgb(200,200,200);  }"
 #endif
-"#labelMiningIcon { padding-left:5px;font-family:sans-serif;width:100%;font-size:10px;text-align:center;color:white; } QMenu { background: rgb(0,161,218); color:white; padding-bottom:10px; } QMenu::item { color:white; background-color: transparent; } QMenu::item:selected { background-color:qlineargradient(x1: 0, y1: 0, x2: 0.5, y2: 0.5,stop: 0 rgb(0,107,147), stop: 1 rgb(0,107,147)); } QMenuBar { background: rgb(0,161,218); color:white; } QMenuBar::item { font-size:12px;padding-bottom:6px;padding-top:6px;padding-left:15px;padding-right:15px;color:white; background-color: transparent; } QMenuBar::item:selected { background-color:qlineargradient(x1: 0, y1: 0, x2: 0.5, y2: 0.5,stop: 0 rgb(0,107,147), stop: 1 rgb(0,107,147)); }");
+"#labelMiningIcon { padding-left:5px;font-family:sans-serif;width:100%;font-size:10px;text-align:center;color:black; } QMenu { background: rgb(200,200,200); color:black; padding-bottom:10px; } QMenu::item { color:black; background-color: transparent; } QMenu::item:selected { background-color:qlineargradient(x1: 0, y1: 0, x2: 0.5, y2: 0.5,stop: 0 rgb(200,200,200), stop: 1 rgb(200,200,200)); } QMenuBar { background: rgb(200,200,200); color:black; } QMenuBar::item { font-size:12px;padding-bottom:6px;padding-top:6px;padding-left:15px;padding-right:15px;color:black; background-color: transparent; } QMenuBar::item:selected { background-color:qlineargradient(x1: 0, y1: 0, x2: 0.5, y2: 0.5,stop: 0 rgb(200,200,200), stop: 1 rgb(200,200,200)); }");
 #ifndef Q_OS_MAC
     qApp->setWindowIcon(QIcon(":icons/bitcoin"));
     setWindowIcon(QIcon(":icons/bitcoin"));
@@ -220,11 +220,7 @@ void BitcoinGUI::createActions()
     overviewAction->setCheckable(true);
     overviewAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_1));
     tabGroup->addAction(overviewAction);
-	
-	statisticsAction = new QAction(QIcon(":/icons/statistics"), tr("&Statistics"), this);
-    statisticsAction->setToolTip(tr("View statistics"));
-    statisticsAction->setCheckable(true);
-    tabGroup->addAction(statisticsAction);
+
 	
 	blockAction = new QAction(QIcon(":/icons/block"), tr("&Block Explorer"), this);
     blockAction->setToolTip(tr("Explore the BlockChain"));
@@ -254,6 +250,12 @@ void BitcoinGUI::createActions()
     addressBookAction->setCheckable(true);
     addressBookAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_5));
     tabGroup->addAction(addressBookAction);
+    
+    statisticsAction = new QAction(QIcon(":/icons/statistics"), tr("&Statistics"), this);
+    statisticsAction->setToolTip(tr("View statistics"));
+    statisticsAction->setCheckable(true);
+    statisticsAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_6));
+    tabGroup->addAction(statisticsAction);
 
     connect(overviewAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
     connect(overviewAction, SIGNAL(triggered()), this, SLOT(gotoOverviewPage()));
