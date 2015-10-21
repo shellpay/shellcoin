@@ -94,10 +94,8 @@ public:
 	vSeeds.push_back(CDNSSeedData("120.25.221.137", "120.25.221.137"));
 	vSeeds.push_back(CDNSSeedData("120.25.150.205", "120.25.150.205"));
 	vSeeds.push_back(CDNSSeedData("112.74.98.71", "112.74.98.71"));
-	vSeeds.push_back(CDNSSeedData("106.187.53.89", "106.187.53.89"));
-	vSeeds.push_back(CDNSSeedData("198.11.177.32", "198.11.177.32"));
 	vSeeds.push_back(CDNSSeedData("62.210.105.88", "62.210.105.88"));
-	vSeeds.push_back(CDNSSeedData("106.187.53.89", "106.187.53.89"));
+
 
 
         base58Prefixes[PUBKEY_ADDRESS] = list_of(63);
