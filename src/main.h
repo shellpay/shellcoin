@@ -53,7 +53,7 @@ static const unsigned int LOCKTIME_THRESHOLD = 500000000; // Tue Nov  5 00:53:20
 
 static const unsigned int GetTargetSpacing = 60;
 
-inline bool IsProtocolV3(int64_t nTime) { return TestNet(); }
+inline bool IsProtocolV3(int64_t nTime) { return TestNet() || nTime > 1447156800; } //Tue, 10 Nov 2015 12:00:00 GMT
 
 inline int64_t FutureDrift(int64_t nTime) { return nTime + 120; }
 
